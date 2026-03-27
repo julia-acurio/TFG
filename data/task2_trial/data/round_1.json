@@ -1,0 +1,9 @@
+{
+  "trial": {
+    "round": 1,
+    "patient_input": "Hola. La verdad es que hoy me siento fatal. No sé ni por dónde empezar… Llevo semanas así, pero hoy ha sido el punto de quiebre. No puedo concentrarme en nada, la ansiedad me está carcomiendo y siento que voy a explotar. Necesitaba hablar con alguien, de verdad.",
+    "option_1": "Entiendo que estás pasando por un momento muy difícil. Es normal que te sientas así dada tu historia. Quiero que sepas que estás en un lugar seguro y que puedo escucharte sin juzgarte. ¿Podrías decirme más sobre lo que te ha llevado a este punto de quiebre? ¿Qué ha sido lo que ha desencadenado esta sensación de ansiedad y no poder concentrarte?",
+    "option_2": "Entiendo que hoy te sientas abrumado y que la ansiedad esté haciendo que te sientas como si estuvieras a punto de explotar. Es normal que te sientas así, especialmente cuando llevas semanas en este estado. ¿Qué te gustaría que hicieras hoy, aunque sea algo pequeño, para empezar a moverte hacia algo que te importe? No necesitas hacerlo solo, y no tienes que dejar de lado el malestar para hacerlo. Solo necesitas dar un paso, aunque sea hacia algo que te parezca insignificante. ¿Qué te gustaría intentar?",
+    "option_3": "Entiendo que te sientas fatal, y es valiente que hayas buscado apoyo. Es normal sentirse abrumado cuando la ansiedad te carcome y sientes que vas a explotar. Permítete sentir esto, es una señal de que algo importante está pasando. Cuéntame, ¿qué es lo que más te preocupa de esta sensación de \"explotar\"? ¿Hay alguna situación específica que haya desencadenado este punto de quiebre, o es una acumulación de cosas? Y, más allá de cómo te sientes ahora mismo, ¿qué te gustaría estar haciendo o sintiendo? ¿Qué tipo de vida te gustaría construir, a pesar de estas dificultades?"
+  }
+}

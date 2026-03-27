@@ -1,0 +1,9 @@
+{
+  "trial": {
+    "round": 10,
+    "patient_input": "Sí, me gustaría que estuvieras ahí. Vale, voy a leer la primera frase. Es... \"Sea f: R -> R definida por f(x) = x^2\". Solo eso. La leo... ¿qué te parece?",
+    "option_1": "Sigue leyendo, pero no te preocupes por entenderla ahora. Solo sigue leyendo. ¿Qué pasa en tu cuerpo mientras lees esa frase? ¿Sientes alguna respuesta física, como tensión o relajación? ¿Hay algún pensamiento que se vaya a aparecer, o te sientes simplemente en el momento de la lectura? No te preocupes por entenderla, solo sigue leyendo. ¿Qué sigue?",
+    "option_2": "Es una frase. Un conjunto de palabras. Un evento que ocurre en tu mente. Y ahora ha pasado. Observa cómo se siente eso, simplemente. Sin necesidad de analizarla, de entenderla, de juzgarla. Solo la experiencia de haberla leído. ¿Qué notas en tu cuerpo o en tu mente ahora que ha pasado? ¿Hay alguna diferencia en la tensión en tus hombros o en el pecho?",
+    "option_3": "La lees, y ya está. No necesitas entenderla, ni juzgarla, ni darle sentido. Es solo una frase, como un pájaro que pasa por el cielo. ¿Qué se siente al haberla leído? ¿Hay algo que te llama la atención en ella? ¿Te gustaría que te ayudara a notar algo más en ese momento?"
+  }
+}
