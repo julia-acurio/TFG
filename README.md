@@ -39,12 +39,19 @@ valoraciones de la comunidad (upvotes) que se usan como señal de calidad.
 ---
 
 ## Estructura del repositorio
+
 ├── data/             # Dataset y corpus de prueba
+
 ├── docs/             # Documentación
+
 ├── knowledge_base/   # Documentos clínicos para RAG
+
 ├── notebooks/        # Experimentos y análisis
+
 ├── reports/          # Resultados de los experimentos
+
 ├── results/          # Resultados intermedios
+
 └── src/              # Código fuente
 
 ---
