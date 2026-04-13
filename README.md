@@ -1,123 +1,56 @@
-# MentalRiskES 2026 — Tarea 2: Selección de Respuesta Terapéutica
+# TFG — Ranking de Respuestas Terapéuticas en Conversaciones de Apoyo en Salud Mental
 
-**Trabajo de Fin de Grado**
-
-**Autora:** Julia Acurio Ajila
-
-**Universidad:** Universidad Rey Juan Carlos
-
-**Tutoras:** Natalia Madrueño Sierro y Soto Montalvo
-
-**Competición:** MentalRiskES@IberLEF 2026
-
-**Web oficial:** https://sites.google.com/view/mentalriskes2026
+**Autora:** Julia Acurio Ajila  
+**Universidad:** Universidad Rey Juan Carlos  
+**Tutoras:** Natalia Madrueño Sierro y Soto Montalvo Herranz
 
 ---
 
-## Descripción del proyecto
+## Descripción
 
-Este Trabajo de Fin de Grado se enmarca en la competición
-**MentalRiskES@IberLEF 2026**, celebrada en el contexto de la conferencia
-**SEPLN 2026** en León (España). La competición propone retos de Procesamiento
-del Lenguaje Natural (PLN) aplicados a la detección temprana de riesgo en
-salud mental en español.
+Este Trabajo de Fin de Grado estudia y compara sistemas de ranking para la 
+selección de respuestas candidatas en conversaciones de apoyo en salud mental, 
+utilizando los upvotes de CounselChat como señal débil de preferencia dentro 
+del marco experimental.
 
-El presente trabajo aborda la **Tarea 2: Selección de Respuesta Terapéutica**,
-cuyo objetivo es desarrollar un sistema de apoyo a la decisión clínica en
-entornos terapéuticos. Dado el último mensaje de un paciente en una
-conversación terapéutica y tres respuestas candidatas del terapeuta, el
-sistema debe seleccionar automáticamente la respuesta más adecuada conforme
-a las buenas prácticas clínicas definidas por expertos.
-
-El corpus utilizado consiste en conversaciones terapéuticas simuladas pero
-clínicamente plausibles en español, generadas mediante una combinación de
-diálogos redactados por humanos y síntesis automática, y revisadas por
-profesionales del ámbito clínico.
-
-Una de las principales dificultades de la tarea reside en que el historial
-completo de la conversación **no se suministra en cada paso**. El sistema
-debe acumular e integrar el contexto de la conversación de forma progresiva
-a lo largo de los turnos sucesivos.
+Dado el mensaje de un paciente y un conjunto variable de respuestas de 
+terapeutas certificados, el sistema rankea las respuestas según su calidad.
 
 ---
 
-## Enfoque propuesto: RAG (Retrieval-Augmented Generation)
+## Dataset
 
-El sistema desarrollado se basa en la arquitectura
-**RAG (Retrieval-Augmented Generation)** (Lewis et al., 2020), que combina
-la capacidad generativa de los modelos de lenguaje con la recuperación de
-información externa relevante.
+**CounselChat** (Bertagnolli, 2020): plataforma online donde terapeutas 
+certificados responden preguntas de pacientes. Las respuestas incluyen 
+valoraciones de la comunidad (upvotes) que se usan como señal de calidad.
 
-La motivación clínica de este enfoque es directa: un terapeuta experto no
-responde únicamente a partir de su experiencia inmediata, sino apoyándose
-en un corpus de conocimiento especializado. El sistema replica este
-comportamiento consultando una base de conocimiento clínico antes de
-seleccionar la respuesta más apropiada.
+- 2.775 ejemplos
+- 940 preguntas únicas
+- 31 temas clínicos
+- Disponible en: https://huggingface.co/datasets/nbertagnolli/counsel-chat
 
-El sistema se compone de tres módulos principales:
+---
 
-**1. Base de conocimiento clínico**
-Colección de documentos especializados en psicoterapia: incluyendo manuales
-de Terapia Cognitivo-Conductual (TCC), Terapia de Aceptación y Compromiso
-(ACT) y Entrevista Motivacional, indexados mediante representaciones
-vectoriales densas (embeddings semánticos).
+## Métricas de evaluación
 
-**2. Módulo de recuperación semántica**
-Dado el mensaje del paciente en cada turno, este módulo recupera
-automáticamente los fragmentos más relevantes de la base de conocimiento
-mediante búsqueda por similitud semántica en un espacio vectorial.
-
-**3. Módulo de selección mediante LLM**
-Un modelo de lenguaje de gran escala (GPT-4o) recibe como entrada el
-historial acumulado de la conversación, los fragmentos recuperados y las
-tres respuestas candidatas, y selecciona la más adecuada según el contexto
-clínico.
+- **Precision@1:** ¿el sistema identifica correctamente la mejor respuesta?
+- **MRR (Mean Reciprocal Rank):** posición media de la respuesta correcta en el ranking
 
 ---
 
 ## Estructura del repositorio
-
-```
-├── data/             # Dataset de MentalRiskES 2026 (no incluido por acuerdo de uso)
-├── knowledge_base/   # Documentos clínicos indexados para el módulo RAG
-├── src/              # Código fuente del sistema
-│   ├── indexer.py        # Construcción de la base de datos vectorial
-│   ├── retriever.py      # Recuperación semántica de fragmentos relevantes
-│   └── selector.py       # Selección de respuesta mediante LLM
-├── notebooks/        # Análisis exploratorio y experimentación
-├── results/          # Resultados de los experimentos realizados
-└── docs/             # Documentación y acuerdos de uso de la competición
-```
-
-## Requisitos e instalación
-
-```bash
-git clone https://github.com/julia-acurio/TFG.git
-cd TFG
-pip install -r requirements.txt
-```
-
-El corpus de MentalRiskES 2026 está sujeto a un acuerdo de uso restringido.
-Para acceder al dataset es necesario registrarse en la competición y firmar
-el acuerdo disponible en el directorio `docs/` de este repositorio y en la
-web oficial de la competición.
+├── data/             # Dataset y corpus de prueba
+├── docs/             # Documentación
+├── knowledge_base/   # Documentos clínicos para RAG
+├── notebooks/        # Experimentos y análisis
+├── reports/          # Resultados de los experimentos
+├── results/          # Resultados intermedios
+└── src/              # Código fuente
 
 ---
 
 ## Referencias
 
-- Mármol-Romero, A. M., Moreno-Muñoz, A., Plaza-del-Arco, F. M.,
-  Molina-González, M. D., Martín-Valdivia, M. T., Ureña-López, L. A., y
-  Montejo-Ráez, A. (2024). Overview of MentalRiskES at IberLEF 2024: Early
-  Detection of Mental Disorders Risk in Spanish. *Procesamiento del Lenguaje
-  Natural*, 73, 435–448.
-  https://dialnet.unirioja.es/servlet/articulo?codigo=9736877
-
-- Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N.,
-  ... y Kiela, D. (2020). Retrieval-Augmented Generation for
-  Knowledge-Intensive NLP Tasks. *Advances in Neural Information Processing
-  Systems (NeurIPS)*, 33, 9459–9474.
-  https://arxiv.org/abs/2005.11401
-
-- MentalRiskES@IberLEF 2026 — Web oficial:
-  https://sites.google.com/view/mentalriskes2026
+- Bertagnolli, N. (2020). Counsel Chat: Bootstrapping High-Quality Therapy Data.
+- Ahmed et al. (2024). Analysis of Mental Health Counseling Conversation Using NLP. Journal of Computer Science, 20(3), 303-309.
+- Lewis et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. NeurIPS.
