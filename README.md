@@ -1,63 +1,44 @@
-# TFG — Ranking de Respuestas Terapéuticas en Conversaciones de Apoyo en Salud Mental
+# Ranking de respuestas en conversaciones de apoyo en salud mental
 
-**Autora:** Julia Acurio Ajila  
-**Universidad:** Universidad Rey Juan Carlos  
-**Tutoras:** Natalia Madrueño Sierro y Soto Montalvo Herranz
+Trabajo Fin de Grado centrado en el diseño y evaluación de un sistema de recuperación y ranking de respuestas de apoyo en salud mental utilizando el dataset CounselChat.
 
----
+## Objetivo
 
-## Descripción
+Dada una consulta de un usuario, el sistema:
 
-Este Trabajo de Fin de Grado estudia y compara sistemas de ranking para la 
-selección de respuestas candidatas en conversaciones de apoyo en salud mental, 
-utilizando los upvotes de CounselChat como señal débil de preferencia dentro 
-del marco experimental.
+1. Recupera preguntas semánticamente similares de CounselChat.
+2. Obtiene las respuestas asociadas.
+3. Ordena las respuestas candidatas mediante distintos métodos de ranking.
+4. Evalúa el rendimiento utilizando señales de preferencia observadas en el dataset.
 
-Dado el mensaje de un paciente y un conjunto variable de respuestas de 
-terapeutas certificados, el sistema rankea las respuestas según su calidad.
+Los `upvotes` se utilizan como señal de referencia para la evaluación, pero no se interpretan como una medida directa de calidad terapéutica.
 
----
+## Estructura del proyecto
 
-## Dataset
-
-**CounselChat** (Bertagnolli, 2020): plataforma online donde terapeutas 
-certificados responden preguntas de pacientes. Las respuestas incluyen 
-valoraciones de la comunidad (upvotes) que se usan como señal de calidad.
-
-- 2.775 ejemplos
-- 940 preguntas únicas
-- 31 temas clínicos
-- Disponible en: https://huggingface.co/datasets/nbertagnolli/counsel-chat
-
----
-
-## Métricas de evaluación
-
-- **Precision@1:** ¿el sistema identifica correctamente la mejor respuesta?
-- **MRR (Mean Reciprocal Rank):** posición media de la respuesta correcta en el ranking
-
----
-
-## Estructura del repositorio
-
-├── data/             # Dataset y corpus de prueba
-
-├── docs/             # Documentación
-
-├── knowledge_base/   # Documentos clínicos para RAG
-
-├── notebooks/        # Experimentos y análisis
-
-├── reports/          # Resultados de los experimentos
-
-├── results/          # Resultados intermedios
-
-└── src/              # Código fuente
-
----
-
-## Referencias
-
-- Bertagnolli, N. (2020). Counsel Chat: Bootstrapping High-Quality Therapy Data.
-- Ahmed et al. (2024). Analysis of Mental Health Counseling Conversation Using NLP. Journal of Computer Science, 20(3), 303-309.
-- Lewis et al. (2020). Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks. NeurIPS.
+```text
+TFG/
+├── data/
+│   └── ranking/
+│       └── split_manifest.csv
+│
+├── experiments/
+│   ├── ranking_v1_mpnet.py
+│   ├── ranking_v2_crossencoder.py
+│   └── evaluate_v2_comparacion.py
+│
+├── notebooks/
+│   ├── 01_EDA_CounselChat.ipynb
+│   └── archive/
+│
+├── src/
+│   ├── baselines.py
+│   ├── build_dataset.py
+│   ├── evaluate.py
+│   ├── evaluate_validation.py
+│   ├── main.py
+│   ├── prepare_training.py
+│   ├── ranking.py
+│   ├── retrieval.py
+│   └── train_ranker.py
+│
+└── README.md
