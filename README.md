@@ -1,124 +1,88 @@
 # Ranking de respuestas en conversaciones de apoyo en salud mental
 
-Este repositorio contiene e código correspondiente alTrabajo Fin de Grado centrado en el diseño y evaluación de un sistema de recuperación y ranking de respuestas de apoyo en salud mental utilizando el dataset CounselChat.
+Este repositorio contiene el código y los experimentos desarrollados para el Trabajo Fin de Grado sobre ranking de respuestas en conversaciones de apoyo en salud mental utilizando el dataset CounselChat.
 
 ## Objetivo
 
-Dada una consulta de un usuario, el sistema:
+El objetivo principal es predecir qué respuesta será la preferida entre las distintas respuestas disponibles para una misma pregunta.
 
-1. Recupera preguntas semánticamente similares de CounselChat.
-2. Obtiene las respuestas asociadas.
-3. Ordena las respuestas candidatas mediante distintos métodos de ranking.
-4. Evalúa el rendimiento utilizando señales de preferencia observadas en el dataset.
+Los `upvotes` se utilizan como señal de preferencia observada: una respuesta se considera top cuando presenta el mayor número de votos dentro de su pregunta.
 
-Los `upvotes` se utilizan como señal de referencia para la evaluación, pero no se interpretan como una medida directa de calidad terapéutica.
+Esta señal no se interpreta como una medida directa de calidad terapéutica, sino como una aproximación a la preferencia observada en el dataset.
 
-## Estructura del proyecto
+## Datos
 
+Se utiliza el dataset CounselChat, que contiene preguntas relacionadas con salud mental y respuestas proporcionadas por profesionales.
 
-```text
-TFG/
-├── data/
-│   └── ranking/
-│       └── split_manifest.csv
-│
-├── experiments/
-│   ├── ranking_v1_mpnet.py
-│   ├── ranking_v2_crossencoder.py
-│   └── evaluate_v2_comparacion.py
-│
-├── notebooks/
-│   ├── 01_EDA_CounselChat.ipynb
-│   └── archive/
-│
-├── src/
-│   ├── baselines.py
-│   ├── build_dataset.py
-│   ├── evaluate.py
-│   ├── evaluate_validation.py
-│   ├── main.py
-│   ├── prepare_training.py
-│   ├── ranking.py
-│   ├── retrieval.py
-│   └── train_ranker.py
-│
-└── README.md
-```
-## Análisis exploratorio
+Para el problema de ranking se seleccionan únicamente preguntas que:
 
-El análisis exploratorio principal se encuentra en:
+- disponen de al menos dos respuestas candidatas;
+- presentan alguna señal positiva de `upvotes`.
 
-`notebooks/01_EDA_CounselChat.ipynb`
+Cuando varias respuestas de una misma pregunta comparten el máximo número de `upvotes`, todas ellas se consideran respuestas correctas durante la evaluación.
 
-En él se estudian, entre otros aspectos:
+## Particionado
 
-- estructura y calidad del dataset;
-- número de respuestas disponibles por pregunta;
-- distribución de `upvotes`;
-- viabilidad del problema de ranking;
-- longitud de las respuestas;
-- distribución temática;
-- relación entre `views` y `upvotes`.
+Las divisiones se realizan siempre a nivel de `questionID`, de forma que todas las respuestas de una misma pregunta permanecen dentro de una única partición.
 
-## Preparación de los datos
+El split train-test y los folds de validación se han estratificado teniendo en cuenta:
 
-El dataset limpio se genera mediante:
+- el número de respuestas candidatas por pregunta;
+- la presencia o ausencia de empate entre las respuestas con mayor número de `upvotes`.
 
-```bash
-python src/build_dataset.py
-```
-
-Los conjuntos utilizados para entrenamiento, validación y test se preparan mediante:
-
-```bash
-python src/prepare_training.py
-```
-
-La separación se realiza por `questionID`, de forma que todas las respuestas asociadas a una misma pregunta permanecen en el mismo conjunto y se evita fuga de información entre train, validation y test.
-
-La partición utilizada se conserva en:
-
-`data/ranking/split_manifest.csv`
+El objetivo es conseguir particiones aproximadamente comparables entre sí.
 
 ## Métodos estudiados
 
-Durante el desarrollo se han evaluado diferentes aproximaciones:
+Se han evaluado diferentes aproximaciones:
 
 - baseline aleatorio;
-- baseline basado en longitud de respuesta;
-- BM25 como método léxico;
-- similitud semántica mediante MPNet;
-- Cross-Encoder preentrenado;
-- Cross-Encoder ajustado con datos de CounselChat.
+- selección de la respuesta más larga;
+- selección de la respuesta más corta;
+- solapamiento léxico entre pregunta y respuesta;
+- TF-IDF + regresión logística;
+- BERT pairwise.
 
-Las métricas principales utilizadas para evaluar el ranking son:
+### BERT pairwise
 
-- Precision@1;
-- Mean Reciprocal Rank (MRR).
+En el enfoque pairwise, BERT aprende a comparar dos respuestas pertenecientes a una misma pregunta.
 
-## Recuperación y ranking
+Para cada pareja con diferente número de `upvotes`, la respuesta con más votos se utiliza como preferida. Las parejas con el mismo número de votos se descartan porque no proporcionan una preferencia clara.
 
-La recuperación semántica de preguntas puede probarse mediante:
+Durante la evaluación, se comparan entre sí todas las respuestas candidatas de una pregunta y se selecciona una única respuesta top-1 mediante un sistema de victorias y probabilidades acumuladas.
 
-```bash
-python src/retrieval.py
-```
+## Evaluación
 
-El sistema completo puede ejecutarse mediante:
+La métrica principal utilizada actualmente es:
 
-```bash
-python src/main.py
-```
-## Estado experimental
+- `Accuracy@1`: porcentaje de preguntas para las que el modelo selecciona una de las respuestas con mayor número de `upvotes`.
 
-Los experimentos realizados muestran que la similitud semántica por sí sola no reproduce completamente la preferencia observada mediante `upvotes`.
+El objetivo posterior es extender la evaluación al ranking completo mediante métricas como MRR y NDCG.
 
-También se ha observado que características como la longitud de las respuestas y, especialmente, su exposición mediante `views`, presentan una asociación relevante con los votos obtenidos.
+## Notebooks
 
-Estos resultados motivan un análisis crítico de los `upvotes` como señal de referencia y de las limitaciones de utilizar esta variable como aproximación a la preferencia o calidad de una respuesta en un contexto de apoyo en salud mental.
+Los principales análisis y experimentos se encuentran en `notebooks/`.
+
+- `01_EDA_CounselChat.ipynb`: análisis exploratorio del dataset y estudio inicial de las señales de preferencia.
+- `03_...`: experimentos con BERT pairwise y análisis de la composición de los folds de validación y test.
+- `04_BERT_Particiones_Equilibradas.ipynb`: nuevo split estratificado, folds equilibrados y evaluación de BERT pairwise.
+
+Los experimentos anteriores se conservan como referencia de la evolución metodológica del proyecto.
+
+## Estado actual
+
+Con las nuevas particiones, BERT pairwise obtiene:
+
+- `Accuracy@1` media en validación cruzada: **44,09 %**
+- desviación estándar: **5,10 %**
+- `Accuracy@1` en test: **37,50 %**
+
+También se ha analizado el límite de longitud de `bert-base-uncased`. El **29,34 % de los pares de entrenamiento supera los 512 tokens**, por lo que parte de la información se trunca durante el entrenamiento.
+
+Este resultado motiva estudiar posteriormente modelos o estrategias capaces de trabajar con secuencias más largas.
 
 ## Reproducibilidad
 
-Los datos procesados, embeddings y modelos entrenados pueden regenerarse mediante los scripts incluidos en `src/`.
+Los experimentos utilizan semillas fijas y las divisiones se realizan por pregunta para evitar que respuestas de una misma consulta aparezcan simultáneamente en entrenamiento y evaluación.
 
-Los archivos generados de gran tamaño no se almacenan directamente en el repositorio. El archivo `split_manifest.csv` permite conservar la partición experimental utilizada durante el desarrollo.
+Los notebooks conservan tanto el proceso de preparación de los datos como las particiones, el entrenamiento y la evaluación de los distintos modelos.
