@@ -63,9 +63,11 @@ El objetivo posterior es extender la evaluación al ranking completo mediante m�
 
 Los principales análisis y experimentos se encuentran en `notebooks/`.
 
-- `01_EDA_CounselChat.ipynb`: análisis exploratorio del dataset y estudio inicial de las señales de preferencia.
-- `03_...`: experimentos con BERT pairwise y análisis de la composición de los folds de validación y test.
-- `04_BERT_Particiones_Equilibradas.ipynb`: nuevo split estratificado, folds equilibrados y evaluación de BERT pairwise.
+- `01_EDA.ipynb`: análisis exploratorio del dataset y estudio inicial de las señales de preferencia.
+- `02_Preference_Analysis_and_Top1_Baselines.ipynb`: análisis de la señal de preferencia basada en `upvotes` y evaluación de los primeros baselines top-1.
+- `02_Preference_Analysis_and_Top1_Baselines_act.ipynb`: versión actualizada del análisis de preferencia y de los baselines top-1.
+- `03_BERT_2v.ipynb`: experimentos con BERT pairwise y análisis de la composición de los folds de validación y del conjunto de test.
+- `04_BERT_Particiones_Equilibradas.ipynb`: nuevo split train-test estratificado, construcción de folds equilibrados y evaluación de BERT pairwise con las nuevas particiones.
 
 Los experimentos anteriores se conservan como referencia de la evolución metodológica del proyecto.
 
