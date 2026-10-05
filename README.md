@@ -16,8 +16,8 @@ Se utiliza el dataset CounselChat, que contiene preguntas relacionadas con salud
 
 Para el problema de ranking se seleccionan únicamente preguntas que:
 
-- disponen de al menos dos respuestas candidatas;
-- presentan alguna señal positiva de `upvotes`.
+- Disponen de al menos dos respuestas candidatas.
+- Presentan alguna señal positiva de `upvotes`.
 
 Cuando varias respuestas de una misma pregunta comparten el máximo número de `upvotes`, todas ellas se consideran respuestas correctas durante la evaluación.
 
@@ -27,8 +27,8 @@ Las divisiones se realizan siempre a nivel de `questionID`, de forma que todas l
 
 El split train-test y los folds de validación se han estratificado teniendo en cuenta:
 
-- el número de respuestas candidatas por pregunta;
-- la presencia o ausencia de empate entre las respuestas con mayor número de `upvotes`.
+- El número de respuestas candidatas por pregunta.
+- La presencia o ausencia de empate entre las respuestas con mayor número de `upvotes`.
 
 El objetivo es conseguir particiones aproximadamente comparables entre sí.
 
@@ -36,11 +36,11 @@ El objetivo es conseguir particiones aproximadamente comparables entre sí.
 
 Se han evaluado diferentes aproximaciones:
 
-- baseline aleatorio;
-- selección de la respuesta más larga;
-- selección de la respuesta más corta;
-- solapamiento léxico entre pregunta y respuesta;
-- TF-IDF + regresión logística;
+- Baseline aleatorio.
+- Selección de la respuesta más larga.
+- Selección de la respuesta más corta.
+- Solapamiento léxico entre pregunta y respuesta.
+- TF-IDF + regresión logística.
 - BERT pairwise.
 
 ### BERT pairwise
