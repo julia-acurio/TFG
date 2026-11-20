@@ -1,90 +1,39 @@
-# Ranking de respuestas en conversaciones de apoyo en salud mental
+# Sistema de predicción de preferencias sobre respuestas en orientación psicológica
 
-Este repositorio contiene el código y los experimentos desarrollados para el Trabajo Fin de Grado sobre ranking de respuestas en conversaciones de apoyo en salud mental utilizando el dataset CounselChat.
+Repositorio del Trabajo de Fin de Grado en **Ciencia e Ingeniería de Datos** de la Universidad Rey Juan Carlos.
 
-## Objetivo
+## Descripción
 
-El objetivo principal es predecir qué respuesta será la preferida entre las distintas respuestas disponibles para una misma pregunta.
+Este proyecto estudia la predicción de preferencias entre respuestas de profesionales a consultas de orientación psicológica, utilizando el conjunto de datos **CounselChat**.
 
-Los `upvotes` se utilizan como señal de preferencia observada: una respuesta se considera top cuando presenta el mayor número de votos dentro de su pregunta.
+El objetivo es identificar qué respuesta tiene mayor probabilidad de ser preferida, tomando como referencia los votos positivos recibidos.
 
-Esta señal no se interpreta como una medida directa de calidad terapéutica, sino como una aproximación a la preferencia observada en el dataset.
+## Metodología
 
-## Datos
+Se han desarrollado y comparado tres enfoques:
 
-Se utiliza el dataset CounselChat, que contiene preguntas relacionadas con salud mental y respuestas proporcionadas por profesionales.
+- **Basados en el texto:** características lingüísticas y modelos de procesamiento del lenguaje natural, incluidos BERT y ModernBERT.
+- **Basados en el historial del terapeuta:** información sobre las preferencias recibidas por sus respuestas anteriores.
+- **Enfoques combinados:** integración de características textuales e históricas.
 
-Para el problema de ranking se seleccionan únicamente preguntas que:
+La evaluación utiliza una separación de entrenamiento y prueba por pregunta y validación cruzada.
 
-- Disponen de al menos dos respuestas candidatas.
-- Presentan alguna señal positiva de `upvotes`.
+## Resultados
 
-Cuando varias respuestas de una misma pregunta comparten el máximo número de `upvotes`, todas ellas se consideran respuestas correctas durante la evaluación.
+El modelo seleccionado utiliza regresión logística y dos características del historial del terapeuta.
 
-## Particionado
+En el conjunto de prueba alcanza una **exactitud del 58,04 %**, frente al **37,57 % esperado de un método aleatorio**.
 
-Las divisiones se realizan siempre a nivel de `questionID`, de forma que todas las respuestas de una misma pregunta permanecen dentro de una única partición.
+Estos resultados reflejan la capacidad de predecir preferencias expresadas mediante votos, no la calidad clínica de las respuestas.
 
-El split train-test y los folds de validación se han estratificado teniendo en cuenta:
+## Estructura del repositorio
 
-- El número de respuestas candidatas por pregunta.
-- La presencia o ausencia de empate entre las respuestas con mayor número de `upvotes`.
+- `notebooks/`: cuadernos de análisis, experimentación y evaluación.
+- `data/`: archivos de datos utilizados en el proyecto.
+- `experiments/`: archivos relacionados con los experimentos.
+- `src/`: código auxiliar del proyecto.
 
-El objetivo es conseguir particiones aproximadamente comparables entre sí.
+## Autora
 
-## Métodos estudiados
-
-Se han evaluado diferentes aproximaciones:
-
-- Baseline aleatorio.
-- Selección de la respuesta más larga.
-- Selección de la respuesta más corta.
-- Solapamiento léxico entre pregunta y respuesta.
-- TF-IDF + regresión logística.
-- BERT pairwise.
-
-### BERT pairwise
-
-En el enfoque pairwise, BERT aprende a comparar dos respuestas pertenecientes a una misma pregunta.
-
-Para cada pareja con diferente número de `upvotes`, la respuesta con más votos se utiliza como preferida. Las parejas con el mismo número de votos se descartan porque no proporcionan una preferencia clara.
-
-Durante la evaluación, se comparan entre sí todas las respuestas candidatas de una pregunta y se selecciona una única respuesta top-1 mediante un sistema de victorias y probabilidades acumuladas.
-
-## Evaluación
-
-La métrica principal utilizada actualmente es:
-
-- `Accuracy@1`: porcentaje de preguntas para las que el modelo selecciona una de las respuestas con mayor número de `upvotes`.
-
-El objetivo posterior es extender la evaluación al ranking completo mediante métricas como MRR y NDCG.
-
-## Notebooks
-
-Los principales análisis y experimentos se encuentran en `notebooks/`.
-
-- `01_EDA.ipynb`: análisis exploratorio del dataset y estudio inicial de las señales de preferencia.
-- `02_Preference_Analysis_and_Top1_Baselines.ipynb`: análisis de la señal de preferencia basada en `upvotes` y evaluación de los primeros baselines top-1.
-- `02_Preference_Analysis_and_Top1_Baselines_act.ipynb`: versión actualizada del análisis de preferencia y de los baselines top-1.
-- `03_BERT_2v.ipynb`: experimentos con BERT pairwise y análisis de la composición de los folds de validación y del conjunto de test.
-- `04_BERT_Particiones_Equilibradas.ipynb`: nuevo split train-test estratificado, construcción de folds equilibrados y evaluación de BERT pairwise con las nuevas particiones.
-
-Los experimentos anteriores se conservan como referencia de la evolución metodológica del proyecto.
-
-## Estado actual
-
-Con las nuevas particiones, BERT pairwise obtiene:
-
-- `Accuracy@1` media en validación cruzada: **44,09 %**
-- desviación estándar: **5,10 %**
-- `Accuracy@1` en test: **37,50 %**
-
-También se ha analizado el límite de longitud de `bert-base-uncased`. El **29,34 % de los pares de entrenamiento supera los 512 tokens**, por lo que parte de la información se trunca durante el entrenamiento.
-
-Este resultado motiva estudiar posteriormente modelos o estrategias capaces de trabajar con secuencias más largas.
-
-## Reproducibilidad
-
-Los experimentos utilizan semillas fijas y las divisiones se realizan por pregunta para evitar que respuestas de una misma consulta aparezcan simultáneamente en entrenamiento y evaluación.
-
-Los notebooks conservan tanto el proceso de preparación de los datos como las particiones, el entrenamiento y la evaluación de los distintos modelos.
+Julia Acurio Ajila  
+Universidad Rey Juan Carlos
